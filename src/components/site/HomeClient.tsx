@@ -1,22 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-import { Heading } from "@/src/components/site/Heading";
 import { AddressInput } from "@/src/components/wallet/AddressInput";
 import { AssetsByOwner } from "@/src/components/wallet/AssetsByOwner";
+import { HeliusAsset } from "@/src/types/api/assets";
 
 // Homepage client to handle front end data management
 
-//if6RZbX2pJEsxaBDH1aFWvAaWUb3dLcouZ2onNXkj1F
-//61ngvyn6YACpbMhtnEYrV6fgMFkBVTX21CdPQJ2X45Lp
-//APKq87wYJxDEJPmWujDGPF779QwV9N8wkvJxAc9QiT9K
-const DEFAULT_OWNER_ADDRESS = "ExtjYxhKfPyUh8QyPseKgdSKoRLVikqLyTobke78UXav";
 const DEBOUNCE_MS = 500;
 
-export function HomeClient() {
+type HomeClientProps = {
+  defaultAddress: string;
+  initialAssets: HeliusAsset[];
+};
+
+export function HomeClient({ defaultAddress, initialAssets }: HomeClientProps) {
   // What the API queries (starts with demo wallet)
-  const [activeAddress, setActiveAddress] = useState(DEFAULT_OWNER_ADDRESS);
+  const [activeAddress, setActiveAddress] = useState<string>(defaultAddress);
   //What the input shows (starts empty)
   const [draftAddress, setDraftAddress] = useState("");
   // Becomes true on first user input
@@ -51,17 +51,16 @@ export function HomeClient() {
 
   return (
     <div className="flex flex-col md:items-center gap-12">
-      <Heading
-        header="Enter a wallet below"
-        subheader="Paste a sol address below to view the stored art"
-      />
       <AddressInput
         value={draftAddress}
         onChange={handleChange}
         onSubmit={commitNow}
       />
       <div className="flex justify-center">
-        <AssetsByOwner ownerAddress={activeAddress} />
+        <AssetsByOwner
+          ownerAddress={activeAddress}
+          initialAssets={initialAssets}
+        />
       </div>
     </div>
   );
