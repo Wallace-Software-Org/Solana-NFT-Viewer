@@ -13,7 +13,6 @@ export function ErrorCard({ title, description }: ErrorCardProps) {
         width={200}
         height={200}
         alt={"Image loading container"}
-        className="animate-pulse"
       />
       <h3 className="truncate pb-1 text-theme-error">{title}</h3>
       <p className="text-xs line-clamp-2 opacity-80">{description}</p>

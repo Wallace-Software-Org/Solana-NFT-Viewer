@@ -8,6 +8,8 @@ import { DEFAULT_PAGE_SIZE } from "@/lib/api/constants";
 // It handles input validation and error mapping so the client never talks to Helius directly
 // or deals with RPC-level concerns
 
+// Frontend -> API Route -> Heliuse Server Module -> Helius API
+
 export async function GET(req: Request) {
   // Extract query params from request
   const { searchParams } = new URL(req.url);
