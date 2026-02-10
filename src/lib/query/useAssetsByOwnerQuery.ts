@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
 import { fetchAssetsByOwner } from "@/src/lib/api/helius.client";
 import { DEFAULT_PAGE_SIZE } from "@/src/lib/api/constants";
 import { AssetsByOwnerResponse } from "@/src/types/api/assets";
@@ -13,11 +13,11 @@ export function useAssetsByOwnerInfiniteQuery(
   limit = DEFAULT_PAGE_SIZE,
 ) {
   return useInfiniteQuery<
-    AssetsByOwnerResponse,
-    Error,
-    AssetsByOwnerResponse,
-    ReturnType<typeof assetsByOwnerKey>,
-    number
+    AssetsByOwnerResponse, // TQueryFnData - what queryFn returns
+    Error, // TError
+    InfiniteData<AssetsByOwnerResponse>, // TData - what the hook returns (wrapped in pages)
+    ReturnType<typeof assetsByOwnerKey>, // TQueryKey
+    number // TPageParam
   >({
     queryKey: assetsByOwnerKey(ownerAddress, limit),
     queryFn: ({ pageParam }) =>

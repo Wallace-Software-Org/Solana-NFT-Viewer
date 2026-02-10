@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+// Returns size of grid columns based on = rows (params) x columns (screen width)
+
 type GridCols = 1 | 2 | 3 | 4;
 
 // Determine number of columns by breakpoint
@@ -15,7 +17,7 @@ const getCols = () => {
 };
 
 // Listen to changes on window resizing and return correct columns and page size
-export const usePageSize = ({ rows = 2 }) => {
+export const useResponsiveGridSize = ({ rows = 2 }) => {
   const [cols, setCols] = useState<GridCols>(() => getCols());
 
   useEffect(() => {
@@ -24,5 +26,5 @@ export const usePageSize = ({ rows = 2 }) => {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  return { cols, pageSize: cols * rows };
+  return { cols, gridSize: cols * rows };
 };
