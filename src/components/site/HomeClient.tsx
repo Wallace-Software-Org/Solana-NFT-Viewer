@@ -3,20 +3,20 @@
 import { useEffect, useState } from "react";
 import { AddressInput } from "@/src/components/wallet/AddressInput";
 import { AssetsByOwner } from "@/src/components/wallet/AssetsByOwner";
-import { HeliusAsset } from "@/src/types/api/assets";
 
 // Homepage client to handle front end data management
 
 const DEBOUNCE_MS = 500;
+const DEFAULT_OWNER_ADDRESS = "ExtjYxhKfPyUh8QyPseKgdSKoRLVikqLyTobke78UXav";
+//if6RZbX2pJEsxaBDH1aFWvAaWUb3dLcouZ2onNXkj1F
+//61ngvyn6YACpbMhtnEYrV6fgMFkBVTX21CdPQJ2X45Lp
+//APKq87wYJxDEJPmWujDGPF779QwV9N8wkvJxAc9QiT9K
 
-type HomeClientProps = {
-  defaultAddress: string;
-  initialAssets: HeliusAsset[];
-};
-
-export function HomeClient({ defaultAddress, initialAssets }: HomeClientProps) {
+export function HomeClient() {
   // What the API queries (starts with demo wallet)
-  const [activeAddress, setActiveAddress] = useState<string>(defaultAddress);
+  const [activeAddress, setActiveAddress] = useState<string>(
+    DEFAULT_OWNER_ADDRESS,
+  );
   //What the input shows (starts empty)
   const [draftAddress, setDraftAddress] = useState("");
   // Becomes true on first user input
@@ -57,10 +57,7 @@ export function HomeClient({ defaultAddress, initialAssets }: HomeClientProps) {
         onSubmit={commitNow}
       />
       <div className="flex justify-center">
-        <AssetsByOwner
-          ownerAddress={activeAddress}
-          initialAssets={initialAssets}
-        />
+        <AssetsByOwner ownerAddress={activeAddress} />
       </div>
     </div>
   );
