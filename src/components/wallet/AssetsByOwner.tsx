@@ -9,24 +9,32 @@ type AssetsByOwnerProps = {
 };
 
 export function AssetsByOwner({ ownerAddress }: AssetsByOwnerProps) {
-  // Ue dynamic query limit based on grid size
   const { gridSize } = useResponsiveGridSize({ rows: 3 });
-  const limit = gridSize;
-
-  const query = useAssetsByOwnerInfiniteQuery(ownerAddress, limit);
+  // Use dynamic query limit based on grid size
+  const query = useAssetsByOwnerInfiniteQuery(ownerAddress, gridSize);
 
   // Infinite query returns pages that need to be flattened
   const items = query.data?.pages.flatMap((p) => p.items) ?? [];
   const hasData = items.length > 0;
 
+  // Used to fetch more data on scroll
+  const loadMore = () => {
+    if (query.hasNextPage && !query.isFetchingNextPage) {
+      query.fetchNextPage();
+    }
+  };
+
   return (
     <ArtGrid
       items={items}
       isLoading={query.isLoading}
-      isFetching={query.isFetching}
+      isFetchingNextPage={query.isFetchingNextPage}
+      hasNextPage={query.hasNextPage}
       isError={query.isError}
       error={query.error}
       hasData={hasData}
+      gridSize={gridSize}
+      onLoadMore={loadMore}
     />
   );
 }

@@ -1,32 +1,60 @@
 import { HeliusAsset } from "@/src/types/api/assets";
 import { GridWrapper } from "@/src/components/nft/GridWrapper";
 import { ArtTile } from "@/src/components/nft/ArtTile";
-import { DEFAULT_PAGE_SIZE } from "@/src/lib/api/constants";
+import { LoadCard } from "@/src/components/nft/LoadCard";
+import { useEffect, useRef, useState } from "react";
 
 type ArtGridProps = {
   items: HeliusAsset[] | undefined;
   isLoading: boolean;
-  isFetching: boolean;
+  isFetchingNextPage: boolean;
+  hasNextPage: boolean;
   isError: boolean;
   error: unknown;
   hasData: boolean;
+  gridSize: number;
+  onLoadMore: () => void;
 };
 
 export function ArtGrid({
   items,
   isLoading,
-  isFetching,
+  isFetchingNextPage,
+  hasNextPage,
   isError,
   error,
   hasData,
+  gridSize,
+  onLoadMore,
 }: ArtGridProps) {
   const showInitialSkeleton = isLoading && !hasData;
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  //
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+    if (!hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          onLoadMore();
+        }
+      },
+      {
+        rootMargin: "200px", // prefetch before visible
+      },
+    );
+
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [hasNextPage, onLoadMore]);
 
   // 1) First load: skeleton grid
   if (showInitialSkeleton) {
     return (
       <GridWrapper>
-        {Array.from({ length: DEFAULT_PAGE_SIZE }).map((_, i) => (
+        {Array.from({ length: gridSize }).map((_, i) => (
           <ArtTile key={`skeleton-${i}`} state="loading" />
         ))}
       </GridWrapper>
@@ -53,12 +81,14 @@ export function ArtGrid({
           <ArtTile
             key={item.id}
             state="success"
-            isUpdating={isFetching}
+            isUpdating={isFetchingNextPage}
             src={item?.content?.links?.image}
             name={item?.content?.metadata?.name}
             description={item?.content?.metadata?.description}
           />
         ))}
+      {hasNextPage && <LoadCard />}
+      {hasNextPage && <div ref={sentinelRef} />}
     </GridWrapper>
   );
 }

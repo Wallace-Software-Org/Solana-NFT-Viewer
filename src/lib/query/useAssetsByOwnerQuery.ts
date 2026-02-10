@@ -23,7 +23,6 @@ export function useAssetsByOwnerInfiniteQuery(
     queryFn: ({ pageParam }) =>
       fetchAssetsByOwner({ ownerAddress, page: pageParam, limit }),
     enabled: Boolean(ownerAddress), // don't fetch until we have an address
-
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       // stop when API returns fewer than requested
