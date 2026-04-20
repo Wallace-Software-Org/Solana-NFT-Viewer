@@ -17,6 +17,7 @@ export function HomeClient() {
 
   //What the input shows (starts empty)
   const [draftAddress, setDraftAddress] = useState("");
+
   // Becomes true on first user input
   const [hasUserEdited, setHasUserEdited] = useState(false);
 
